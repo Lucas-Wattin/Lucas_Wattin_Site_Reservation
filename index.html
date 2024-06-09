@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Réservation Hotel</title>
+    <!--<script type="text/javascript" src="script.js"></script> -->
+</head>
+<body onload="initialisationFormulaire()">
+    <header>
+        <h1>BOOKING HOTEL</h1>
+        <h2>Indiquez vos dates de réservation - Toute annulation doit se faire 48h avant</h2>
+    </header>
+
+    <section id="contenu">
+    <section id="formulaire">
+        <table>
+            <tr>
+                <td colspan="2"><img src="img/carte.png" alt="logo"></td>
+                <td colspan="2"><h3>FRANCE - ÉTRANGER</h3></td>
+            </tr>
+            <tr>
+                <td colspan="2"><label for="LieuSejour">Lieu de séjour</label></td>
+                <td colspan="2"><input type="text" id="LieuSejourID" name="LieuSejour" required></td>
+            </tr>
+            <tr>
+                <td colspan="2"><label for="DateArrivee">Arrivée</label><br>
+                    <input type="date" id="DateArriveeID" name="DateArrivee" required></td>
+                <td colspan="2"><label for="DateDepart">Départ</label><br>
+                    <input type="date" id="DateDepartID" name="DateDepart" required></td>
+            </tr>
+            <tr>
+                <td><label for="NbAdulte">Adulte</label></td>
+                <td><input type="text" id="NbAdulteID" name="NbAdulte" class="read" readonly></td>
+                <td><img src="img/plus.png" alt="bouton_plus" id="adulte_plus" onclick="ajouterValue('NbAdulteID')"></td>
+                <td><img src="img/moins.png" alt="bouton_moins" id="adulte_moins" onclick="enleverValue('NbAdulteID')"></td>
+            </tr>
+            <tr>
+                <td><label for="NbEnfant">Enfant</label></td>
+                <td><input type="text" id="NbEnfantID" name="NbEnfant" class="read" readonly></td>
+                <td><img src="img/plus.png" alt="bouton_plus" id="enfant_plus" onclick="ajouterEnfant()"></td>
+                <td><img src="img/moins.png" alt="bouton_moins" id="enfant_moins" onclick="enleverEnfant()"></td>
+            </tr>
+            <tr>
+                <td><label for="NbChambre">Chambre</label></td>
+                <td><input type="text" id="NbChambreID" name="NbChambre" class="read" readonly></td>
+                <td><img src="img/plus.png" alt="bouton_plus" id="chambre_plus" onclick="ajouterValue('NbChambreID')"></td>
+                <td><img src="img/moins.png" alt="bouton_moins" id="chambre_moins" onclick="enleverValue('NbChambreID')"></td>
+            </tr>
+            <tr>
+                <td colspan="4"><input type="button" id="submit" value="Rechercher" onclick="recap()"></td>
+            </tr>
+            <tr>
+                <td colspan="4"><input type="button" id="reset" value="Effacer" onclick="initialisationFormulaire()"></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <input type="checkbox" name="voyage_job" id="voyage_type">
+                    <label for="voyage_job">Je voyage pour le travail</label><br>
+                </td>
+            </tr>
+            <tbody id="nouveaux_enfants_tbody"></tbody>
+        </table>
+    </section>
+    
+    <section id="resultat">
+        <h2>Confirmation Réservation</h2>
+        <p id="dateValide"></p>
+        <p>Nombre d'adulte :</p>
+        <p id="recapAdulte">0</p>
+        <p>Nombre d'enfant :</p>
+        <p id="recapEnfant">0</p>
+        <p>Nombre de chambre :</p>
+        <p id="recapChambre">0</p>
+        <p>Voyage pour le travail :</p>
+        <p id="recapVoyage">NON</p>
+    </section>
+    </section>
+
+    <script>
+        function initialisationFormulaire(){
+
+            var nbenfant = document.getElementById('NbEnfantID').value;
+            for (let i = 0; i < nbenfant; i++){
+                var tbody = document.getElementById('nouveaux_enfants_tbody');
+                if (tbody.lastChild) {
+                    tbody.removeChild(tbody.lastChild);
+                }
+            }
+
+            document.getElementById('LieuSejourID').value="";
+            document.getElementById('DateArriveeID').value="";
+            document.getElementById('DateDepartID').value="";
+            document.getElementById('NbAdulteID').value="0";
+            document.getElementById('NbEnfantID').value="0";
+            document.getElementById('NbChambreID').value="0";
+
+            document.getElementById('dateValide').textContent = "";
+            document.getElementById('recapAdulte').textContent = "0";
+            document.getElementById('recapEnfant').textContent = "0";
+            document.getElementById('recapChambre').textContent = "0";
+            document.getElementById('recapVoyage').textContent = "NON";
+
+        }
+
+        function recap(){
+            var arrivee = document.getElementById('DateArriveeID').value;
+            var depart = document.getElementById('DateDepartID').value;
+
+            if (arrivee < depart){
+                var nbadulte = document.getElementById('NbAdulteID').value;
+                var nbenfant = document.getElementById('NbEnfantID').value;
+                var nbchambre = document.getElementById('NbChambreID').value;
+                var typevoyage = document.getElementById('voyage_type').checked ? "OUI" : "NON";
+
+                document.getElementById('dateValide').textContent = "";
+                document.getElementById('recapAdulte').textContent = nbadulte;
+                document.getElementById('recapEnfant').textContent = nbenfant;
+                document.getElementById('recapChambre').textContent = nbchambre;
+                document.getElementById('recapVoyage').textContent = typevoyage;
+            } else {
+                document.getElementById('dateValide').textContent = "Veuillez sélectionner des dates valides";
+            }
+        }
+
+        function ajouterValue(id) {
+            var input = document.getElementById(id);
+            var value = parseInt(input.value, 10);
+            value = isNaN(value) ? 0 : value;
+            value++;
+            input.value = value;
+        }
+
+        function enleverValue(id) {
+            var input = document.getElementById(id);
+            var value = parseInt(input.value, 10);
+            value = isNaN(value) ? 0 : value;
+            value = value > 0 ? value - 1 : 0;
+            input.value = value;
+        }
+
+        function ajouterEnfant() {
+            var input = document.getElementById('NbEnfantID');
+            var value = parseInt(input.value, 10);
+            value = isNaN(value) ? 0 : value;
+            value++;
+            input.value = value;
+
+            if (event.target.id === 'enfant_plus') {
+                var tbody = document.getElementById('nouveaux_enfants_tbody');
+                var newRow = document.createElement('tr');
+                var newCell = document.createElement('td');
+                var newInput = document.createElement('input');
+                newInput.type = 'number';
+                newInput.name = 'enfant_' + value;
+                newInput.placeholder = 'Âge enfant ' + value;
+                newInput.min = 0;
+                newInput.max = 17;
+                newCell.appendChild(newInput);
+                newRow.appendChild(newCell);
+                tbody.appendChild(newRow);
+            }
+        }
+
+        function enleverEnfant() {
+            var input = document.getElementById('NbEnfantID');
+            var value = parseInt(input.value, 10);
+            value = isNaN(value) ? 0 : value;
+            value = value > 0 ? value - 1 : 0;
+            input.value = value;
+
+            if (event.target.id === 'enfant_moins') {
+                var tbody = document.getElementById('nouveaux_enfants_tbody');
+                if (tbody.lastChild) {
+                    tbody.removeChild(tbody.lastChild);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
